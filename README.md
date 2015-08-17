@@ -21,8 +21,8 @@ $ composer require big-shark/sql-to-builder
 ## Usage
 
 ``` php
-$skeleton = new BigShark\SQLToBuilder\Builder();
-echo $skeleton->echoPhrase('Hello, big-shark!');
+$builder = new \BigShark\SQLToBuilder\BuilderClass('SELECT a, b, c  FROM some_table WHERE d > 5');
+echo $builder->convert();//"DB::table('some_table')->select('a', 'b', 'c')->where('d', '>', 5)->get()"
 ```
 
 ## Change log
