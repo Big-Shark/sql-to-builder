@@ -54,7 +54,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [ico-version]: https://img.shields.io/packagist/v/big-shark/sql-to-builder.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/big-shark/sql-to-builder/master.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/Big-Shark/sql-to-builder/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/big-shark/sql-to-builder.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/big-shark/sql-to-builder.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/big-shark/sql-to-builder.svg?style=flat-square
