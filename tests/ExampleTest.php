@@ -19,9 +19,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 
     public function testConvert()
     {
-        $builder = new BuilderClass($this->sql);
-        $result = $builder->convert();
-        $this->assertEquals($result, "DB::table('some_table')->select('a', 'b', 'c')->where('d', '>', 5)->get()");
+        $result = (new BuilderClass($this->sql))->convert();
+        $this->assertEquals($result, "DB::table('some_table')->select('a', 'b', 'c')->andWhere('d', '>', 5)->get()");
+
+        $result = (new BuilderClass('SELECT a, b, c  FROM some_table WHERE d > 5 and b = 1'))->convert();
+        $this->assertEquals($result, "DB::table('some_table')->select('a', 'b', 'c')->andWhere('d', '>', 5)->andWhere('b', '=', 1)->get()");
+
+        $result = (new BuilderClass('SELECT a, b, c  FROM some_table WHERE d > 5 or b = 1'))->convert();
+        $this->assertEquals($result, "DB::table('some_table')->select('a', 'b', 'c')->andWhere('d', '>', 5)->orWhere('b', '=', 1)->get()");
     }
 
     public function testFrom()
