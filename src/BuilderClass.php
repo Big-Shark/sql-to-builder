@@ -27,13 +27,18 @@ class BuilderClass
 
         if(isset($parsed['SELECT']))
         {
-            $q['select'] = $this->parseSelect($parsed['SELECT']);
+            $select = $this->parseSelect($parsed['SELECT']);
+            if( $select ) {
+                $q['select'] = $select;
+            }
         }
 
         if(isset($parsed['WHERE']))
         {
             $where = $this->parseWhere($parsed['WHERE']);
-            $q['where'] = implode($where, '->');
+            if( $where ) {
+                $q['where'] = implode($where, '->');
+            }
         }
 
         return "DB::".implode($q,'->')."->get()";//$this->sql;
@@ -41,21 +46,50 @@ class BuilderClass
 
     protected function parseFrom($from)
     {
-        if( isset($from[0]) and 'table' === $from[0]['expr_type'])
+        if (count($from) == 1)
         {
-            return "table('".$from[0]['table']."')";
+            if('table' === $from[0]['expr_type'])
+            {
+                $value = $from[0]['table'];
+                if( isset($from[0]['no_quotes']['parts'][0]) )
+                {
+                    $value = $from[0]['no_quotes']['parts'][0];
+                }
+                return "table('".$value."')";
+            }
         }
+
         throw new \Exception('Not valid from');
     }
 
     protected function parseSelect($select)
     {
+        if (count($select) == 1 )
+        {
+            $value = $select[0]['base_expr'];
+            if( isset($select[0]['no_quotes']['parts'][0]) )
+            {
+                $value = $select[0]['no_quotes']['parts'][0];
+            }
+            if( '*' === $value)
+            {
+                return null;
+            }
+            unset($value);
+        }
+
         $s = [];
         foreach($select as $item)
         {
             if( 'colref' === $item['expr_type'])
             {
-                $s[] = $item['base_expr'];
+                $value = $item['base_expr'];
+                if( isset($item['no_quotes']['parts'][0]) )
+                {
+                    $value = $item['no_quotes']['parts'][0];
+                }
+
+                $s[] = $value;
             }
         }
         if( $s )
@@ -73,7 +107,12 @@ class BuilderClass
         {
             if('colref' === $item['expr_type'])
             {
-                $w[$i]['args']['col'] = $item['base_expr'];
+                $value = $item['base_expr'];
+                if( isset($item['no_quotes']['parts'][0]) )
+                {
+                    $value = $item['no_quotes']['parts'][0];
+                }
+                $w[$i]['args']['col'] = $value;
             }
             elseif('const' === $item['expr_type'])
             {
