@@ -64,19 +64,4 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` = 1 or `b` = 1'))->convert();
         $this->assertEquals($result, "DB::table('table')->andWhere('a', '=', 1)->orWhere('b', '=', 1)->get()");
     }
-
-
-
-    public function testFrom()
-    {
-        $method = new \ReflectionMethod(
-            'BigShark\SQLToBuilder\BuilderClass', 'parseFrom'
-        );
-
-        $method->setAccessible(TRUE);
-
-        $obj = new BuilderClass($this->sql);
-        $result = $method->invokeArgs($obj, [ [ ['expr_type' => 'table', 'table' => 'some_table'] ] ]);
-        $this->assertEquals("table('some_table')", $result);
-    }
 }
