@@ -2,14 +2,34 @@
 
 namespace BigShark\SQLToBuilder;
 
+use BigShark\SQLToBuilder\Converter\Factory;
 use PHPSQLParser\PHPSQLParser;
 
 class BuilderClass
 {
-    protected $sql = null;
+    /**
+     * @var string
+     */
+    protected $sql;
+
+    /**
+     * @var PHPSQLParser
+     */
+    protected $sqlParser;
+
+    /**
+     * @var Factory
+     */
+    protected $converterFactory;
+
+    /**
+     * @param string $sql
+     */
     public function __construct($sql)
     {
         $this->sql = $sql;
+        $this->sqlParser = new PHPSQLParser;
+        $this->converterFactory = new Factory;
     }
 
     /**
@@ -17,137 +37,48 @@ class BuilderClass
      */
     public function convert()
     {
-        $parser = new PHPSQLParser();
-        $parsed = $parser->parse($this->sql);
-        $q = [];
-        if(isset($parsed['FROM']))
-        {
-            $q['table'] = $this->parseFrom($parsed['FROM']);
-        }
+        $parsed = $this->sqlParser->parse($this->sql);
 
-        if(isset($parsed['SELECT']))
-        {
-            $select = $this->parseSelect($parsed['SELECT']);
-            if( $select ) {
-                $q['select'] = $select;
+        $builderParts = [];
+
+        foreach ($parsed as $section => $data) {
+            if ($this->converterFactory->canCreate($section)) {
+                $converter = $this->converterFactory->create($section);
+                $builderParts[$section] = $converter->convert($data);
             }
         }
 
-        if(isset($parsed['WHERE']))
-        {
-            $where = $this->parseWhere($parsed['WHERE']);
-            if( $where ) {
-                $q['where'] = implode($where, '->');
-            }
-        }
-
-        return "DB::".implode($q,'->')."->get()";//$this->sql;
+        return $this->buildFromParts($builderParts);
     }
 
-    protected function parseFrom($from)
+    /**
+     * @param array $builderParts
+     * @param bool $main
+     * @return string
+     */
+    protected function buildFromParts($builderParts, $main = true)
     {
-        if (count($from) == 1)
-        {
-            if('table' === $from[0]['expr_type'])
-            {
-                $value = $from[0]['table'];
-                if( isset($from[0]['no_quotes']['parts'][0]) )
-                {
-                    $value = $from[0]['no_quotes']['parts'][0];
+        $builderParts = array_filter($builderParts);
+
+        if ($main) {
+
+            $from = $builderParts['FROM'];
+            unset($builderParts['FROM']);
+            array_unshift($builderParts, $from);
+            array_push($builderParts, 'get()');
+
+            return 'DB::' . $this->buildFromParts($builderParts, false);
+
+        } else {
+
+            foreach ($builderParts as $key => $part) {
+                if (is_array($part)) {
+                    $builderParts[$key] = $this->buildFromParts($part, false);
                 }
-                return "table('".$value."')";
             }
+
+            return implode($builderParts, '->');
         }
 
-        throw new \Exception('Not valid from');
-    }
-
-    protected function parseSelect($select)
-    {
-        if (count($select) == 1 )
-        {
-            $value = $select[0]['base_expr'];
-            if( isset($select[0]['no_quotes']['parts'][0]) )
-            {
-                $value = $select[0]['no_quotes']['parts'][0];
-            }
-            if( '*' === $value)
-            {
-                return null;
-            }
-            unset($value);
-        }
-
-        $s = [];
-        foreach($select as $item)
-        {
-            if( 'colref' === $item['expr_type'])
-            {
-                $value = $item['base_expr'];
-                if( isset($item['no_quotes']['parts'][0]) )
-                {
-                    $value = $item['no_quotes']['parts'][0];
-                }
-
-                $s[] = $value;
-            }
-        }
-        if( $s )
-        {
-            return "select('".implode($s, "', '")."')";
-        }
-        throw new \Exception('Not valid select');
-    }
-
-    protected function parseWhere($where)
-    {
-        $i = 0;
-        $w = [];
-        foreach($where as $key=>$item)
-        {
-            if('colref' === $item['expr_type'])
-            {
-                $value = $item['base_expr'];
-                if( isset($item['no_quotes']['parts'][0]) )
-                {
-                    $value = $item['no_quotes']['parts'][0];
-                }
-                $w[$i]['args']['col'] = $value;
-            }
-            elseif('const' === $item['expr_type'])
-            {
-                $w[$i]['args']['value'] = $item['base_expr'];
-            }
-            elseif('operator' === $item['expr_type'] AND 'or' !== $item['base_expr'] AND 'and' !== $item['base_expr'] )
-            {
-                $w[$i]['args']['operator'] = $item['base_expr'];
-            }
-            elseif('operator' === $item['expr_type'] AND ( 'or' === $item['base_expr'] OR 'and' === $item['base_expr'] ))
-            {
-                $i++;
-                $w[$i]['connector'] = $item['base_expr'];
-            }
-            //dump($w);
-        }
-
-        if( $w )
-        {
-            $r = [];
-            foreach($w as $where)
-            {
-                //dump($where);
-                if( ! isset($where['connector']))
-                {
-                    $where['connector'] = 'and';
-                }
-                if( ! is_numeric($where['args']['value'])  )
-                {
-                    $where['args']['value'] = "'".$where['args']['value']."'";
-                }
-                $r[] =  $where['connector'] . "Where('" . $where['args']['col'] . "', '" . $where['args']['operator'] . "', " . $where['args']['value'] . ")";
-            }
-            return $r;
-        }
-        throw new \Exception('Not valid where');
     }
 }
