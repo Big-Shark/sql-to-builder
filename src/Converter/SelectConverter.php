@@ -35,7 +35,7 @@ class SelectConverter implements ConverterInterface
                 $s[] = $value;
             }
         }
-        if( $s )
+        if( is_array($s) and count($s) )
         {
             return "select('".implode($s, "', '")."')";
         }

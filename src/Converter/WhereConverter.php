@@ -24,24 +24,22 @@ class WhereConverter implements ConverterInterface
             {
                 $w[$i]['args']['value'] = $item['base_expr'];
             }
-            elseif('operator' === $item['expr_type'] AND 'or' !== $item['base_expr'] AND 'and' !== $item['base_expr'] )
+            elseif('operator' === $item['expr_type'] && 'or' !== $item['base_expr'] && 'and' !== $item['base_expr'] )
             {
                 $w[$i]['args']['operator'] = $item['base_expr'];
             }
-            elseif('operator' === $item['expr_type'] AND ( 'or' === $item['base_expr'] OR 'and' === $item['base_expr'] ))
+            elseif('operator' === $item['expr_type'] || ( 'or' === $item['base_expr'] || 'and' === $item['base_expr'] ))
             {
                 $i++;
                 $w[$i]['connector'] = $item['base_expr'];
             }
-            //dump($w);
         }
 
-        if( $w )
+        if( is_array($w) and count($w) > 0 )
         {
             $r = [];
             foreach($w as $where)
             {
-                //dump($where);
                 if( ! isset($where['connector']))
                 {
                     $where['connector'] = 'and';
@@ -54,6 +52,6 @@ class WhereConverter implements ConverterInterface
             }
             return $r;
         }
-        throw new \Exception('Not valid where');
+        return [];
     }
 }
