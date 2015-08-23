@@ -3,17 +3,14 @@
 namespace BigShark\SQLToBuilder\Converter;
 
 
-class SelectConverter implements ConverterInterface
+class SelectConverter extends Converter implements ConverterInterface
 {
     public function convert($select)
     {
         if (count($select) == 1 )
         {
-            $value = $select[0]['base_expr'];
-            if( isset($select[0]['no_quotes']['parts'][0]) )
-            {
-                $value = $select[0]['no_quotes']['parts'][0];
-            }
+
+            $value = $this->getValueWithoutQuotes($select[0]);
             if( '*' === $value)
             {
                 return null;
@@ -26,16 +23,11 @@ class SelectConverter implements ConverterInterface
         {
             if( 'colref' === $item['expr_type'])
             {
-                $value = $item['base_expr'];
-                if( isset($item['no_quotes']['parts'][0]) )
-                {
-                    $value = $item['no_quotes']['parts'][0];
-                }
-
+                $value = $this->getValueWithoutQuotes($item);
                 $s[] = $value;
             }
         }
-        if( is_array($s) and count($s) )
+        if( is_array($s) && count($s) )
         {
             return "select('".implode($s, "', '")."')";
         }

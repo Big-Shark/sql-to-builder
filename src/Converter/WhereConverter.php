@@ -3,7 +3,7 @@
 namespace BigShark\SQLToBuilder\Converter;
 
 
-class WhereConverter implements ConverterInterface
+class WhereConverter extends Converter implements ConverterInterface
 {
     public function convert($where)
     {
@@ -13,12 +13,7 @@ class WhereConverter implements ConverterInterface
         {
             if('colref' === $item['expr_type'])
             {
-                $value = $item['base_expr'];
-                if( isset($item['no_quotes']['parts'][0]) )
-                {
-                    $value = $item['no_quotes']['parts'][0];
-                }
-                $w[$i]['args']['col'] = $value;
+                $w[$i]['args']['col'] = $this->getValueWithoutQuotes($item);
             }
             elseif('const' === $item['expr_type'])
             {
@@ -35,7 +30,7 @@ class WhereConverter implements ConverterInterface
             }
         }
 
-        if( is_array($w) and count($w) > 0 )
+        if( is_array($w) && count($w) > 0 )
         {
             $r = [];
             foreach($w as $where)

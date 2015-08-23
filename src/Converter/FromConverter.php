@@ -3,7 +3,7 @@
 namespace BigShark\SQLToBuilder\Converter;
 
 
-class FromConverter implements ConverterInterface
+class FromConverter extends Converter implements ConverterInterface
 {
     public function convert($from)
     {
@@ -11,11 +11,7 @@ class FromConverter implements ConverterInterface
         {
             if('table' === $from[0]['expr_type'])
             {
-                $value = $from[0]['table'];
-                if( isset($from[0]['no_quotes']['parts'][0]) )
-                {
-                    $value = $from[0]['no_quotes']['parts'][0];
-                }
+                $value = $this->getValueWithoutQuotes($from[0], 'table');
                 return "table('".$value."')";
             }
         }
