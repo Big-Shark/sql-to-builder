@@ -2,11 +2,11 @@
 
 namespace BigShark\SQLToBuilder\Converter;
 
-
 class Factory
 {
     /**
      * @param string $key
+     *
      * @return bool
      */
     public function canCreate($key)
@@ -16,12 +16,14 @@ class Factory
 
     /**
      * @param string $key
+     *
      * @return ConverterInterface
      */
     public function create($key)
     {
         if ($this->canCreate($key)) {
             $class = $this->getFullPath($key);
+
             return new $class();
         } else {
             throw new \InvalidArgumentException("{$key} converter not found");
@@ -30,12 +32,13 @@ class Factory
 
     /**
      * @param string $key
+     *
      * @return string
      */
     protected function getFullPath($key)
     {
         $key = ucfirst(strtolower($key));
-        return 'BigShark\\SQLToBuilder\\Converter\\' . $key . 'Converter';
-    }
 
+        return 'BigShark\\SQLToBuilder\\Converter\\'.$key.'Converter';
+    }
 }
