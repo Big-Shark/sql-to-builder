@@ -8,9 +8,8 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 {
     protected $sql = 'SELECT a, b, c  FROM some_table WHERE d > 5';
 
-
     /**
-     * Test that true does in fact equal true
+     * Test that true does in fact equal true.
      */
     public function testTrueIsTrue()
     {
