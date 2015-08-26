@@ -28,8 +28,8 @@ class BuilderClass
     public function __construct($sql)
     {
         $this->sql = $sql;
-        $this->sqlParser = new PHPSQLParser;
-        $this->converterFactory = new Factory;
+        $this->sqlParser = new PHPSQLParser();
+        $this->converterFactory = new Factory();
     }
 
     /**
@@ -53,7 +53,8 @@ class BuilderClass
 
     /**
      * @param array $builderParts
-     * @param bool $main
+     * @param bool  $main
+     *
      * @return string
      */
     protected function buildFromParts($builderParts, $main = true)
@@ -61,16 +62,13 @@ class BuilderClass
         $builderParts = array_filter($builderParts);
 
         if ($main) {
-
             $from = $builderParts['FROM'];
             unset($builderParts['FROM']);
             array_unshift($builderParts, $from);
             array_push($builderParts, 'get()');
 
-            return 'DB::' . $this->buildFromParts($builderParts, false);
-
+            return 'DB::'.$this->buildFromParts($builderParts, false);
         } else {
-
             foreach ($builderParts as $key => $part) {
                 if (is_array($part)) {
                     $builderParts[$key] = $this->buildFromParts($part, false);
@@ -79,6 +77,5 @@ class BuilderClass
 
             return implode($builderParts, '->');
         }
-
     }
 }
