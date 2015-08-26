@@ -50,18 +50,24 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     public function testWhereQuotes()
     {
         $result = (new BuilderClass('SELECT *  FROM table WHERE `a` = 1'))->convert();
-        $this->assertEquals($result, "DB::table('table')->andWhere('a', '=', 1)->get()");
+        $this->assertEquals($result, "DB::table('table')->where('a', '=', 1)->get()");
 
         $result = (new BuilderClass('SELECT *  FROM table WHERE a = 1'))->convert();
-        $this->assertEquals($result, "DB::table('table')->andWhere('a', '=', 1)->get()");
+        $this->assertEquals($result, "DB::table('table')->where('a', '=', 1)->get()");
     }
 
     public function testWhere()
     {
         $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` = 1 and `b` = 1'))->convert();
-        $this->assertEquals($result, "DB::table('table')->andWhere('a', '=', 1)->andWhere('b', '=', 1)->get()");
+        $this->assertEquals($result, "DB::table('table')->where('a', '=', 1)->where('b', '=', 1)->get()");
 
         $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` = 1 or `b` = 1'))->convert();
-        $this->assertEquals($result, "DB::table('table')->andWhere('a', '=', 1)->orWhere('b', '=', 1)->get()");
+        $this->assertEquals($result, "DB::table('table')->where('a', '=', 1)->orWhere('b', '=', 1)->get()");
+    }
+
+    public function testWhereIn()
+    {
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IN (\'a\', \'b\') or `b` IN (\'c\', \'d\')'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->whereIn(\'a\', [\'a\', \'b\'])->orWhereIn(\'b\', [\'c\', \'d\'])->get()');
     }
 }

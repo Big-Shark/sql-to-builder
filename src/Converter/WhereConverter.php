@@ -7,6 +7,7 @@ class WhereConverter extends Converter implements ConverterInterface
 {
     public function convert($where)
     {
+        //dump($where);
         $i = 0;
         $w = [];
         foreach($where as $key=>$item)
@@ -18,6 +19,10 @@ class WhereConverter extends Converter implements ConverterInterface
             elseif('const' === $item['expr_type'])
             {
                 $w[$i]['args']['value'] = $item['base_expr'];
+            }
+            elseif('in-list' === $item['expr_type'])
+            {
+                $w[$i]['args']['value'] = array_column($item['sub_tree'], 'base_expr');
             }
             elseif('operator' === $item['expr_type'] && 'or' !== $item['base_expr'] && 'and' !== $item['base_expr'] )
             {
@@ -35,15 +40,27 @@ class WhereConverter extends Converter implements ConverterInterface
             $r = [];
             foreach($w as $where)
             {
-                if( ! isset($where['connector']))
+                if( isset($where['connector']) && 'or' === $where['connector'] )
                 {
-                    $where['connector'] = 'and';
+                    $where['where'] = 'orWhere';
                 }
-                if( ! is_numeric($where['args']['value'])  )
+                else
                 {
-                    $where['args']['value'] = "'".$where['args']['value']."'";
+                    $where['where'] = 'where';
                 }
-                $r[] =  $where['connector'] . "Where('" . $where['args']['col'] . "', '" . $where['args']['operator'] . "', " . $where['args']['value'] . ")";
+
+                if ('IN' === $where['args']['operator'])
+                {
+                    $r[] =  $where['where'] . "In('" . $where['args']['col'] . "', [" . implode(', ', $where['args']['value']).']' . ")";
+                }
+                else
+                {
+                    if( ! is_numeric($where['args']['value'])  )
+                    {
+                        $where['args']['value'] = "'".$where['args']['value']."'";
+                    }
+                    $r[] =  $where['where'] . "('" . $where['args']['col'] . "', '" . $where['args']['operator'] . "', " . $where['args']['value'] . ")";
+                }
             }
             return $r;
         }
