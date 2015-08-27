@@ -69,4 +69,10 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IN (\'a\', \'b\') or `b` IN (\'c\', \'d\')'))->convert();
         $this->assertEquals($result, 'DB::table(\'table\')->whereIn(\'a\', [\'a\', \'b\'])->orWhereIn(\'b\', [\'c\', \'d\'])->get()');
     }
+
+    public function testWhereNotIn()
+    {
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` NOT IN (\'a\', \'b\') or `b` NOT IN (\'c\', \'d\')'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->whereNotIn(\'a\', [\'a\', \'b\'])->orWhereNotIn(\'b\', [\'c\', \'d\'])->get()');
+    }
 }

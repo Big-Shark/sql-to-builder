@@ -10,16 +10,20 @@ class WhereConverter extends Converter implements ConverterInterface
         $w = [];
         foreach ($where as $key => $item) {
             if ('colref' === $item['expr_type']) {
-                $w[$i]['args']['col'] = $this->getValueWithoutQuotes($item);
+                $w[$i]['col'] = $this->getValueWithoutQuotes($item);
             } elseif ('const' === $item['expr_type']) {
-                $w[$i]['args']['value'] = $item['base_expr'];
+                $w[$i]['value'] = $item['base_expr'];
             } elseif ('in-list' === $item['expr_type']) {
-                $w[$i]['args']['value'] = array_column($item['sub_tree'], 'base_expr');
-            } elseif ('operator' === $item['expr_type'] && 'or' !== $item['base_expr'] && 'and' !== $item['base_expr']) {
-                $w[$i]['args']['operator'] = $item['base_expr'];
-            } elseif ('operator' === $item['expr_type'] || ('or' === $item['base_expr'] || 'and' === $item['base_expr'])) {
-                $i++;
-                $w[$i]['connector'] = $item['base_expr'];
+                $w[$i]['value'] = array_column($item['sub_tree'], 'base_expr');
+            } elseif ('operator' === $item['expr_type']) {
+                if ('NOT' === $item['base_expr']) {
+                    $w[$i]['not'] = true;
+                } elseif ('or' !== $item['base_expr'] && 'and' !== $item['base_expr']) {
+                    $w[$i]['operator'] = $item['base_expr'];
+                } elseif ('or' === $item['base_expr'] || 'and' === $item['base_expr']) {
+                    $i++;
+                    $w[$i]['connector'] = $item['base_expr'];
+                }
             }
         }
 
@@ -32,13 +36,19 @@ class WhereConverter extends Converter implements ConverterInterface
                     $where['where'] = 'where';
                 }
 
-                if ('IN' === $where['args']['operator']) {
-                    $r[] = $where['where'].'In(\''.$where['args']['col'].'\', ['.implode(', ', $where['args']['value']).']'.')';
+                if (isset($where['not'])) {
+                    $where['not'] = 'Not';
                 } else {
-                    if (!is_numeric($where['args']['value'])) {
-                        $where['args']['value'] = "'".$where['args']['value']."'";
+                    $where['not'] = '';
+                }
+
+                if ('IN' === strtoupper($where['operator'])) {
+                    $r[] = $where['where'].$where['not'].'In(\''.$where['col'].'\', ['.implode(', ', $where['value']).']'.')';
+                } else {
+                    if (!is_numeric($where['value'])) {
+                        $where['value'] = "'".$where['value']."'";
                     }
-                    $r[] = $where['where'].'(\''.$where['args']['col'].'\', \''.$where['args']['operator'].'\', '.$where['args']['value'].')';
+                    $r[] = $where['where'].'(\''.$where['col'].'\', \''.$where['operator'].'\', '.$where['value'].')';
                 }
             }
 
