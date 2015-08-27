@@ -64,6 +64,12 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, "DB::table('table')->where('a', '=', 1)->orWhere('b', '=', 1)->get()");
     }
 
+    public function testWhereNumericAndText()
+    {
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` = 1 and `b` = \'b\''))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->where(\'a\', \'=\', 1)->where(\'b\', \'=\', \'b\')->get()');
+    }
+
     public function testWhereIn()
     {
         $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IN (\'a\', \'b\') or `b` IN (\'c\', \'d\')'))->convert();

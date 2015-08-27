@@ -45,9 +45,6 @@ class WhereConverter extends Converter implements ConverterInterface
                 if ('IN' === strtoupper($where['operator'])) {
                     $r[] = $where['where'].$where['not'].'In(\''.$where['col'].'\', ['.implode(', ', $where['value']).']'.')';
                 } else {
-                    if (!is_numeric($where['value'])) {
-                        $where['value'] = "'".$where['value']."'";
-                    }
                     $r[] = $where['where'].'(\''.$where['col'].'\', \''.$where['operator'].'\', '.$where['value'].')';
                 }
             }
