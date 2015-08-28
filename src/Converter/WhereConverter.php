@@ -6,6 +6,8 @@ class WhereConverter extends Converter implements ConverterInterface
 {
     public function convert($where)
     {
+        var_export($where);
+        //die();
         $i = 0;
         $w = [];
         foreach ($where as $key => $item) {
@@ -16,13 +18,14 @@ class WhereConverter extends Converter implements ConverterInterface
             } elseif ('in-list' === $item['expr_type']) {
                 $w[$i]['value'] = array_column($item['sub_tree'], 'base_expr');
             } elseif ('operator' === $item['expr_type']) {
-                if ('NOT' === $item['base_expr']) {
+                $upper = strtoupper($item['base_expr']);
+                if ('NOT' === $upper) {
                     $w[$i]['not'] = true;
-                } elseif ('or' !== $item['base_expr'] && 'and' !== $item['base_expr']) {
+                } elseif ('OR' !== $upper && 'AND' !== $upper) {
                     $w[$i]['operator'] = $item['base_expr'];
-                } elseif ('or' === $item['base_expr'] || 'and' === $item['base_expr']) {
+                } elseif ('OR' === $upper || 'AND' === $upper) {
                     $i++;
-                    $w[$i]['connector'] = $item['base_expr'];
+                    $w[$i]['connector'] = $upper;
                 }
             }
         }
@@ -30,7 +33,7 @@ class WhereConverter extends Converter implements ConverterInterface
         if (is_array($w) && count($w) > 0) {
             $r = [];
             foreach ($w as $where) {
-                if (isset($where['connector']) && 'or' === $where['connector']) {
+                if (isset($where['connector']) && 'OR' === $where['connector']) {
                     $where['where'] = 'orWhere';
                 } else {
                     $where['where'] = 'where';
