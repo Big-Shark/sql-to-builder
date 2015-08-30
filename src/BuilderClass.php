@@ -30,6 +30,7 @@ class BuilderClass
         $this->sql = $sql;
         $this->sqlParser = new PHPSQLParser();
         $this->converterFactory = new Factory();
+        $this->generator = new Generator('DB');
     }
 
     /**
@@ -39,43 +40,17 @@ class BuilderClass
     {
         $parsed = $this->sqlParser->parse($this->sql);
 
-        $builderParts = [];
-
         foreach ($parsed as $section => $data) {
             if ($this->converterFactory->canCreate($section)) {
                 $converter = $this->converterFactory->create($section);
-                $builderParts[$section] = $converter->convert($data);
-            }
-        }
-
-        return $this->buildFromParts($builderParts);
-    }
-
-    /**
-     * @param array $builderParts
-     * @param bool  $main
-     *
-     * @return string
-     */
-    protected function buildFromParts($builderParts, $main = true)
-    {
-        $builderParts = array_filter($builderParts);
-
-        if ($main) {
-            $from = $builderParts['FROM'];
-            unset($builderParts['FROM']);
-            array_unshift($builderParts, $from);
-            array_push($builderParts, 'get()');
-
-            return 'DB::'.$this->buildFromParts($builderParts, false);
-        } else {
-            foreach ($builderParts as $key => $part) {
-                if (is_array($part)) {
-                    $builderParts[$key] = $this->buildFromParts($part, false);
+                $result = $converter->convert($data);
+                foreach ($result as $function) {
+                    $this->generator->addFunction($function['name'], (isset($function['args']) ? $function['args'] : []));
                 }
             }
-
-            return implode($builderParts, '->');
         }
+
+        $this->generator->addFunction('get');
+        return $this->generator->generate();
     }
 }

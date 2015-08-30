@@ -2,6 +2,8 @@
 
 namespace BigShark\SQLToBuilder\Converter;
 
+use BigShark\SQLToBuilder\Generator;
+
 class Factory
 {
     /**

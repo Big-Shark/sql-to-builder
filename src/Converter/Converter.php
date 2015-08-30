@@ -2,6 +2,8 @@
 
 namespace BigShark\SQLToBuilder\Converter;
 
+use BigShark\SQLToBuilder\Generator;
+
 abstract class Converter
 {
     /**
@@ -20,5 +22,34 @@ abstract class Converter
         }
 
         return $value;
+    }
+
+    /**
+     * Get item value without quotes.
+     *
+     * @param string $value  Value
+     *
+     * @return mixed
+     */
+    protected function getValueWithoutInvertedCommas($value)
+    {
+        if (substr($value, 0, 1) === '\'' && substr($value, -1, 1) === '\'') {
+            $value = substr($value, 1, -1);
+        }
+        return $value;
+    }
+
+    /**
+     * @param $name
+     * @param $args
+     * @return array
+     */
+    protected function format($name, array $args = null)
+    {
+        $result = ['name' => $name];
+        if ($args !== null) {
+            $result['args'] = $args;
+        }
+        return $result;
     }
 }

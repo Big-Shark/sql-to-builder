@@ -3,6 +3,7 @@
 namespace BigShark\SQLToBuilder\Test;
 
 use BigShark\SQLToBuilder\BuilderClass;
+use BigShark\SQLToBuilder\Generator;
 
 class WhereTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +16,8 @@ class WhereTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->converter = new \BigShark\SQLToBuilder\Converter\WhereConverter();
+        $this->converter = new \BigShark\SQLToBuilder\Converter\WhereConverter(new Generator('$db'));
+
         $this->baseWhere = [
             [
                 'expr_type' => 'colref',
@@ -37,7 +39,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
     public function testSimple()
     {
         $result = $this->converter->convert($this->baseWhere);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'=\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '=', '1']]]);
     }
 
     public function testQuotes()
@@ -53,7 +55,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         ];
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'=\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '=', '1']]]);
     }
 
     public function testStringValue()
@@ -62,7 +64,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[2]['base_expr'] = '\'a\'';
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'=\', \'a\')']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '=', 'a']]]);
     }
 
     public function testGT()
@@ -71,7 +73,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[1]['base_expr'] = '>';
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'>\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '>', '1']]]);
     }
 
     public function testGTE()
@@ -80,7 +82,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[1]['base_expr'] = '>=';
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'>=\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '>=', '1']]]);
     }
 
     public function testLT()
@@ -89,7 +91,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[1]['base_expr'] = '<';
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'<\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '<', '1']]]);
     }
 
     public function testLTE()
@@ -98,7 +100,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[1]['base_expr'] = '<=';
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'<=\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '<=', '1']]]);
     }
 
     public function testNe()
@@ -107,13 +109,13 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[1]['base_expr'] = '!=';
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'!=\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '!=', '1']]]);
 
         $where = $this->baseWhere;
         $where[1]['base_expr'] = '<>';
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'<>\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '<>', '1']]]);
     }
 
     public function testIN()
@@ -138,7 +140,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         ];
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'whereIn(\'a\', [\'a\', \'b\'])']);
+        $this->assertEquals($result, [['name' => 'whereIn', 'args' => ['a', ['a', 'b']]]]);
 
         $where = $this->baseWhere;
         $where[1]['base_expr'] = 'IN';
@@ -160,7 +162,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         ];
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'whereIn(\'a\', [1, 2])']);
+        $this->assertEquals($result, [['name' => 'whereIn', 'args' => ['a', [1, 2]]]]);
     }
 
     public function testNotIN()
@@ -190,7 +192,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         ];
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'whereNotIn(\'a\', [\'a\', \'b\'])']);
+        $this->assertEquals($result, [['name' => 'whereNotIn', 'args' => ['a', ['a', 'b']]]]);
     }
 
     public function testAnd()
@@ -206,7 +208,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[6] = $where[2];
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'=\', 1)', 1 => 'where(\'a\', \'=\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '=', '1']], ['name' => 'where', 'args' => ['a', '=', '1']]]);
     }
 
     public function testOr()
@@ -222,7 +224,8 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[6] = $where[2];
 
         $result = $this->converter->convert($where);
-        $this->assertEquals($result, [0 => 'where(\'a\', \'=\', 1)', 1 => 'orWhere(\'a\', \'=\', 1)']);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '=', '1']], ['name' => 'orWhere', 'args' => ['a', '=', '1']]]);
+
     }
 }
 

@@ -37,13 +37,13 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     public function testSimpleSelect()
     {
         $result = (new BuilderClass('SELECT a, b, c  FROM table'))->convert();
-        $this->assertEquals($result, "DB::table('table')->select('a', 'b', 'c')->get()");
+        $this->assertEquals($result, "DB::select('a', 'b', 'c')->table('table')->get()");
     }
 
     public function testSimpleSelectQuotes()
     {
         $result = (new BuilderClass('SELECT `a`, `b`, `c`  FROM table'))->convert();
-        $this->assertEquals($result, "DB::table('table')->select('a', 'b', 'c')->get()");
+        $this->assertEquals($result, "DB::select('a', 'b', 'c')->table('table')->get()");
     }
 
     public function testWhereQuotes()

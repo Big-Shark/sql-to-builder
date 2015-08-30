@@ -9,7 +9,7 @@ class SelectConverter extends Converter implements ConverterInterface
         if (count($select) == 1) {
             $value = $this->getValueWithoutQuotes($select[0]);
             if ('*' === $value) {
-                return;
+                return [];
             }
             unset($value);
         }
@@ -22,7 +22,7 @@ class SelectConverter extends Converter implements ConverterInterface
             }
         }
         if (is_array($s) && count($s)) {
-            return "select('".implode($s, "', '")."')";
+            return [$this->format('select', $s)];
         }
         throw new \Exception('Not valid select');
     }

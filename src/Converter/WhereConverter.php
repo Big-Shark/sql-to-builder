@@ -6,17 +6,15 @@ class WhereConverter extends Converter implements ConverterInterface
 {
     public function convert($where)
     {
-        var_export($where);
-        //die();
         $i = 0;
         $w = [];
         foreach ($where as $key => $item) {
             if ('colref' === $item['expr_type']) {
                 $w[$i]['col'] = $this->getValueWithoutQuotes($item);
             } elseif ('const' === $item['expr_type']) {
-                $w[$i]['value'] = $item['base_expr'];
+                $w[$i]['value'] = $this->getValueWithoutInvertedCommas($item['base_expr']);
             } elseif ('in-list' === $item['expr_type']) {
-                $w[$i]['value'] = array_column($item['sub_tree'], 'base_expr');
+                $w[$i]['value'] = array_map([$this, 'getValueWithoutInvertedCommas'], array_column($item['sub_tree'], 'base_expr'));
             } elseif ('operator' === $item['expr_type']) {
                 $upper = strtoupper($item['base_expr']);
                 if ('NOT' === $upper) {
@@ -30,8 +28,8 @@ class WhereConverter extends Converter implements ConverterInterface
             }
         }
 
+        $result = [];
         if (is_array($w) && count($w) > 0) {
-            $r = [];
             foreach ($w as $where) {
                 if (isset($where['connector']) && 'OR' === $where['connector']) {
                     $where['where'] = 'orWhere';
@@ -46,15 +44,13 @@ class WhereConverter extends Converter implements ConverterInterface
                 }
 
                 if ('IN' === strtoupper($where['operator'])) {
-                    $r[] = $where['where'].$where['not'].'In(\''.$where['col'].'\', ['.implode(', ', $where['value']).']'.')';
+                    $result[] = $this->format($where['where'].$where['not'].'In', [$where['col'], $where['value']]);
                 } else {
-                    $r[] = $where['where'].'(\''.$where['col'].'\', \''.$where['operator'].'\', '.$where['value'].')';
+                    $result[] = $this->format($where['where'], [$where['col'], $where['operator'], $where['value']]);
                 }
             }
-
-            return $r;
         }
 
-        return [];
+        return $result;
     }
 }
