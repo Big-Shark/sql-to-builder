@@ -227,5 +227,27 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '=', '1']], ['name' => 'orWhere', 'args' => ['a', '=', '1']]]);
 
     }
+
+    public function testLike()
+    {
+
+        $where = $this->baseWhere;
+        $where[1]['base_expr'] = 'LIKE';
+
+        $where[2]['base_expr'] = '%a%';
+
+        $result = $this->converter->convert($where);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', 'LIKE', '%a%']]]);
+
+        $where[2]['base_expr'] = '%a';
+
+        $result = $this->converter->convert($where);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', 'LIKE', '%a']]]);
+
+        $where[2]['base_expr'] = 'a%';
+
+        $result = $this->converter->convert($where);
+        $this->assertEquals($result, [['name' => 'where', 'args' => ['a', 'LIKE', 'a%']]]);
+    }
 }
 

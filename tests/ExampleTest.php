@@ -81,4 +81,10 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` NOT IN (\'a\', \'b\') or `b` NOT IN (\'c\', \'d\')'))->convert();
         $this->assertEquals($result, 'DB::table(\'table\')->whereNotIn(\'a\', [\'a\', \'b\'])->orWhereNotIn(\'b\', [\'c\', \'d\'])->get()');
     }
+
+    public function testWhereLike()
+    {
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` LIKE \'%a%\''))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->where(\'a\', \'LIKE\', \'%a%\')->get()');
+    }
 }
