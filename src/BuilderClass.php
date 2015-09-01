@@ -23,6 +23,11 @@ class BuilderClass
     protected $converterFactory;
 
     /**
+     * @var Generator
+     */
+    protected $generator;
+
+    /**
      * @param string $sql
      */
     public function __construct($sql)
