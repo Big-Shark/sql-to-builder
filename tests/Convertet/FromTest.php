@@ -18,13 +18,13 @@ class FromTest extends \PHPUnit_Framework_TestCase
     {
         try {
             $result = $this->converter->convert([[],[]]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertEquals($e->getMessage(), 'Not valid from');
         }
 
         try {
             $result = $this->converter->convert([['expr_type' => 'foo']]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertEquals($e->getMessage(), 'Not valid from');
         }
     }
@@ -37,7 +37,6 @@ class FromTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($result, [['name' => 'table', 'args' => ['table']]]);
 
-
         $from['table'] = '`table`';
         $from['no_quotes'] = ['parts' => ['table']];
         $result = $this->converter->convert([$from]);
@@ -45,5 +44,3 @@ class FromTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, [['name' => 'table', 'args' => ['table']]]);
     }
 }
-
-

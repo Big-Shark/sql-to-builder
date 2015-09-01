@@ -28,11 +28,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         try {
             $factory->create('foo');
             $this->assertTrue(false);
-        }
-        catch (\InvalidArgumentException $e)
-        {
+        } catch (\InvalidArgumentException $e) {
             $this->assertTrue(true);
         }
     }
 }
-

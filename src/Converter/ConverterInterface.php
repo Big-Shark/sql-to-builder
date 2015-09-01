@@ -4,7 +4,7 @@ namespace BigShark\SQLToBuilder\Converter;
 
 interface ConverterInterface
 {
-   /**
+    /**
      * @param array $data
      *
      * @return array
