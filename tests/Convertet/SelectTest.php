@@ -18,7 +18,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         try {
             $result = $this->converter->convert([['expr_type' => 'foo', 'base_expr' => 'bar']]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertEquals($e->getMessage(), 'Not valid select');
         }
     }
@@ -61,5 +61,3 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, [['name' => 'select', 'args' => ['a', 'b']]]);
     }
 }
-
-

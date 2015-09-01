@@ -56,6 +56,7 @@ class BuilderClass
         }
 
         $this->generator->addFunction('get');
+
         return $this->generator->generate();
     }
 }

@@ -15,7 +15,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
         $generator = new Generator('$db');
         try {
             $generator->generate();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertEquals($e->getMessage(), 'function list empty');
         }
     }
@@ -94,4 +94,3 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($generator->generate(), 'DB::test([\'a\', \'b\', \'c\'])');
     }
 }
-

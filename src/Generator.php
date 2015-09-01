@@ -2,8 +2,8 @@
 
 namespace BigShark\SQLToBuilder;
 
-class Generator {
-
+class Generator
+{
     /**
      * @var array
      */
@@ -24,11 +24,13 @@ class Generator {
     /**
      * @param $name
      * @param array $args
+     *
      * @return $this
      */
     public function addFunction($name, $args = [])
     {
         $this->functions[] = ['name' => $name, 'args' => $args];
+
         return $this;
     }
 
@@ -47,7 +49,6 @@ class Generator {
     {
         return $this->class;
     }
-
 
     /**
      * @return bool
@@ -76,11 +77,13 @@ class Generator {
         }
 
         $result = $this->class.($this->isStatic() ? '::' : '->').implode($parts, '->');
+
         return $result;
     }
 
     /**
      * @param $_args
+     *
      * @return array
      */
     protected function generateArgs($_args)
@@ -89,12 +92,13 @@ class Generator {
         foreach ($_args as $arg) {
             if (is_int($arg) || is_float($arg) || is_numeric($arg)) {
                 $args[] = $arg;
-            } elseif(is_array($arg)) {
+            } elseif (is_array($arg)) {
                 $args[] = '['.implode(', ', $this->generateArgs($arg)).']';
             } else {
-                $args[] = '\'' . $arg . '\'';
+                $args[] = '\''.$arg.'\'';
             }
         }
+
         return $args;
     }
 }

@@ -27,7 +27,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
             [
                 'expr_type' => 'const',
                 'base_expr' => 1,
-            ]
+            ],
         ];
     }
 
@@ -46,11 +46,10 @@ class WhereTest extends \PHPUnit_Framework_TestCase
     public function testQuotes()
     {
         $where = $this->baseWhere;
-        $where[0] =  [
+        $where[0] = [
             'expr_type' => 'colref',
             'base_expr' => '`a`',
-            'no_quotes' =>
-            [
+            'no_quotes' => [
                 'parts' => ['a'],
             ],
         ];
@@ -126,7 +125,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[2] = [
             'expr_type' => 'in-list',
             'base_expr' => '(\'a\', \'b\')',
-            'sub_tree' => [
+            'sub_tree'  => [
                 [
                     'expr_type' => 'const',
                     'base_expr' => '\'a\'',
@@ -146,7 +145,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[2] = [
             'expr_type' => 'in-list',
             'base_expr' => '(1, 2)',
-            'sub_tree' => [
+            'sub_tree'  => [
                 [
                     'expr_type' => 'const',
                     'base_expr' => '1',
@@ -173,7 +172,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[3] = [
             'expr_type' => 'in-list',
             'base_expr' => '(\'a\', \'b\')',
-            'sub_tree' => [
+            'sub_tree'  => [
                 [
                     'expr_type' => 'const',
                     'base_expr' => '\'a\'',
@@ -217,12 +216,10 @@ class WhereTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->converter->convert($where);
         $this->assertEquals($result, [['name' => 'where', 'args' => ['a', '=', '1']], ['name' => 'orWhere', 'args' => ['a', '=', '1']]]);
-
     }
 
     public function testLike()
     {
-
         $where = $this->baseWhere;
         $where[1]['base_expr'] = 'LIKE';
 
@@ -242,4 +239,3 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, [['name' => 'where', 'args' => ['a', 'LIKE', 'a%']]]);
     }
 }
-
