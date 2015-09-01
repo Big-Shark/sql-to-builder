@@ -2,7 +2,6 @@
 
 namespace BigShark\SQLToBuilder\Test;
 
-use BigShark\SQLToBuilder\BuilderClass;
 use BigShark\SQLToBuilder\Generator;
 
 class GeneratorTest extends \PHPUnit_Framework_TestCase

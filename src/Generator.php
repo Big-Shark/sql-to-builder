@@ -2,10 +2,6 @@
 
 namespace BigShark\SQLToBuilder;
 
-/**
- * Class Generator
- * @package BigShark\SQLToBuilder
- */
 class Generator {
 
     /**

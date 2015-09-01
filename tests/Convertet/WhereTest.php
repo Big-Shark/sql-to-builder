@@ -1,9 +1,6 @@
 <?php
 
-namespace BigShark\SQLToBuilder\Test;
-
-use BigShark\SQLToBuilder\BuilderClass;
-use BigShark\SQLToBuilder\Generator;
+namespace BigShark\SQLToBuilder\Test\Converter;
 
 class WhereTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +13,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->converter = new \BigShark\SQLToBuilder\Converter\WhereConverter(new Generator('$db'));
+        $this->converter = new \BigShark\SQLToBuilder\Converter\WhereConverter();
 
         $this->baseWhere = [
             [
@@ -26,14 +23,18 @@ class WhereTest extends \PHPUnit_Framework_TestCase
             [
                 'expr_type' => 'operator',
                 'base_expr' => '=',
-                'sub_tree' => false,
             ],
             [
                 'expr_type' => 'const',
                 'base_expr' => 1,
-                'sub_tree' => false,
             ]
         ];
+    }
+
+    public function testEmpty()
+    {
+        $result = $this->converter->convert([]);
+        $this->assertEquals($result, []);
     }
 
     public function testSimple()
@@ -129,12 +130,10 @@ class WhereTest extends \PHPUnit_Framework_TestCase
                 [
                     'expr_type' => 'const',
                     'base_expr' => '\'a\'',
-                    'sub_tree' => false,
                 ],
                 [
                     'expr_type' => 'const',
                     'base_expr' => '\'b\'',
-                    'sub_tree' => false,
                 ],
             ],
         ];
@@ -151,12 +150,10 @@ class WhereTest extends \PHPUnit_Framework_TestCase
                 [
                     'expr_type' => 'const',
                     'base_expr' => '1',
-                    'sub_tree' => false,
                 ],
                 [
                     'expr_type' => 'const',
                     'base_expr' => '2',
-                    'sub_tree' => false,
                 ],
             ],
         ];
@@ -172,7 +169,6 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[2] = [
             'expr_type' => 'operator',
             'base_expr' => 'IN',
-            'sub_tree' => false,
         ];
         $where[3] = [
             'expr_type' => 'in-list',
@@ -181,12 +177,10 @@ class WhereTest extends \PHPUnit_Framework_TestCase
                 [
                     'expr_type' => 'const',
                     'base_expr' => '\'a\'',
-                    'sub_tree' => false,
                 ],
                 [
                     'expr_type' => 'const',
                     'base_expr' => '\'b\'',
-                    'sub_tree' => false,
                 ],
             ],
         ];
@@ -201,7 +195,6 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[3] = [
             'expr_type' => 'operator',
             'base_expr' => 'AND',
-            'sub_tree' => false,
         ];
         $where[4] = $where[0];
         $where[5] = $where[1];
@@ -217,7 +210,6 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $where[3] = [
             'expr_type' => 'operator',
             'base_expr' => 'OR',
-            'sub_tree' => false,
         ];
         $where[4] = $where[0];
         $where[5] = $where[1];
