@@ -96,4 +96,12 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, 'DB::table(\'table\')->whereNotNull(\'a\')->orWhereNotNull(\'b\')->get()');
     }
 
+    public function testSelectAlias()
+    {
+        $result = (new BuilderClass('SELECT `a` as `b`  FROM `table`'))->convert();
+        $this->assertEquals($result, 'DB::select(\'a as b\')->table(\'table\')->get()');
+
+        $result = (new BuilderClass('SELECT a as b  FROM `table`'))->convert();
+        $this->assertEquals($result, 'DB::select(\'a as b\')->table(\'table\')->get()');
+    }
 }

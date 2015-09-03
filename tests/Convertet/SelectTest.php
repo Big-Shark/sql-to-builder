@@ -60,4 +60,25 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $result = $this->converter->convert([$selectA, $selectB]);
         $this->assertEquals($result, [['name' => 'select', 'args' => ['a', 'b']]]);
     }
+
+    public function testAliases()
+    {
+        $select = ['expr_type' => 'colref', 'base_expr' => 'a'];
+        $select['alias'] = ['name' => 'b'];
+
+        $result = $this->converter->convert([$select]);
+        $this->assertEquals($result, [['name' => 'select', 'args' => ['a as b']]]);
+
+        $select['base_expr'] = '`a`';
+        $select['no_quotes'] = ['parts' => ['a']];
+
+        $result = $this->converter->convert([$select]);
+        $this->assertEquals($result, [['name' => 'select', 'args' => ['a as b']]]);
+
+        $select['alias'] = ['name' => '`b`'];
+        $select['alias']['no_quotes'] = ['parts' => ['b']];
+
+        $result = $this->converter->convert([$select]);
+        $this->assertEquals($result, [['name' => 'select', 'args' => ['a as b']]]);
+    }
 }

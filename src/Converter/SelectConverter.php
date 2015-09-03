@@ -18,6 +18,9 @@ class SelectConverter extends Converter implements ConverterInterface
         foreach ($select as $item) {
             if ('colref' === $item['expr_type']) {
                 $value = $this->getValueWithoutQuotes($item);
+                if (isset($item['alias']) && is_array($item['alias'])) {
+                    $value .= ' as '.$this->getValueWithoutQuotes($item['alias'], 'name');
+                }
                 $s[] = $value;
             }
         }
