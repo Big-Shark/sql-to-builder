@@ -238,4 +238,14 @@ class WhereTest extends \PHPUnit_Framework_TestCase
         $result = $this->converter->convert($where);
         $this->assertEquals($result, [['name' => 'where', 'args' => ['a', 'LIKE', 'a%']]]);
     }
+
+    public function testIs()
+    {
+        $where = $this->baseWhere;
+        $where[1]['base_expr'] = 'IS';
+        $where[2]['base_expr'] = 'NULL';
+
+        $result = $this->converter->convert($where);
+        $this->assertEquals($result, [['name' => 'whereNull', 'args' => ['a']]]);
+    }
 }

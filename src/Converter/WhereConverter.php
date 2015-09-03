@@ -45,6 +45,8 @@ class WhereConverter extends Converter implements ConverterInterface
 
                 if ('IN' === strtoupper($where['operator'])) {
                     $result[] = $this->format($where['where'].$where['not'].'In', [$where['col'], $where['value']]);
+                } elseif ('IS' === strtoupper($where['operator']) && 'NULL' === strtoupper($where['value'])) {
+                    $result[] = $this->format($where['where'].$where['not'].'Null', [$where['col']]);
                 } else {
                     $result[] = $this->format($where['where'], [$where['col'], $where['operator'], $where['value']]);
                 }

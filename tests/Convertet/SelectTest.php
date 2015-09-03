@@ -17,7 +17,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     public function testNotValid()
     {
         try {
-            $result = $this->converter->convert([['expr_type' => 'foo', 'base_expr' => 'bar']]);
+            $this->converter->convert([['expr_type' => 'foo', 'base_expr' => 'bar']]);
         } catch (\Exception $e) {
             $this->assertEquals($e->getMessage(), 'Not valid select');
         }

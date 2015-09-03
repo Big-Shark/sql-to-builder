@@ -77,4 +77,23 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` LIKE \'%a%\''))->convert();
         $this->assertEquals($result, 'DB::table(\'table\')->where(\'a\', \'LIKE\', \'%a%\')->get()');
     }
+
+    public function testWhereIsNull()
+    {
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IS NULL and `b` IS NULL'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->whereNull(\'a\')->whereNull(\'b\')->get()');
+
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IS NULL or `b` IS NULL'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->whereNull(\'a\')->orWhereNull(\'b\')->get()');
+    }
+
+    public function testWhereIsNotNull()
+    {
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IS NOT NULL and `b` IS NOT NULL'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->whereNotNull(\'a\')->whereNotNull(\'b\')->get()');
+
+        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IS NOT NULL or `b` IS NOT NULL'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->whereNotNull(\'a\')->orWhereNotNull(\'b\')->get()');
+    }
+
 }
