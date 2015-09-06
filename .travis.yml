@@ -11,6 +11,12 @@ php:
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
 sudo: false
 
+# cache vendors
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
 matrix:
   allow_failures:
     - php: nightly
