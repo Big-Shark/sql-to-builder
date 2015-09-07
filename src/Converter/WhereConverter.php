@@ -14,7 +14,8 @@ class WhereConverter extends Converter implements ConverterInterface
             } elseif ('const' === $item['expr_type']) {
                 $w[$i]['value'] = $this->getValueWithoutInvertedCommas($item['base_expr']);
             } elseif ('in-list' === $item['expr_type']) {
-                $w[$i]['value'] = array_map([$this, 'getValueWithoutInvertedCommas'], array_column($item['sub_tree'], 'base_expr'));
+                $callback = [$this, 'getValueWithoutInvertedCommas'];
+                $w[$i]['value'] = array_map($callback, array_column($item['sub_tree'], 'base_expr'));
             } elseif ('operator' === $item['expr_type']) {
                 $upper = strtoupper($item['base_expr']);
                 if ('NOT' === $upper) {
