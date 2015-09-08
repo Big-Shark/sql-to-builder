@@ -14,21 +14,6 @@ class FromTest extends \PHPUnit_Framework_TestCase
         $this->converter = new \BigShark\SQLToBuilder\Converter\FromConverter();
     }
 
-    public function testNotValid()
-    {
-        try {
-            $result = $this->converter->convert([[],[]]);
-        } catch (\Exception $e) {
-            $this->assertEquals($e->getMessage(), 'Not valid from');
-        }
-
-        try {
-            $result = $this->converter->convert([['expr_type' => 'foo']]);
-        } catch (\Exception $e) {
-            $this->assertEquals($e->getMessage(), 'Not valid from');
-        }
-    }
-
     public function testSimple()
     {
         $from = ['expr_type' => 'table', 'table' => 'table'];
@@ -42,5 +27,81 @@ class FromTest extends \PHPUnit_Framework_TestCase
         $result = $this->converter->convert([$from]);
 
         $this->assertEquals($result, [['name' => 'table', 'args' => ['table']]]);
+    }
+
+    public function testJoin()
+    {
+        $from = [
+            [
+                'expr_type' => 'table',
+                'table'     => '`tableA`',
+                'no_quotes' => [
+                    'delim' => false,
+                    'parts' => [
+                        'tableA',
+                    ],
+                ],
+                'alias'      => false,
+                'hints'      => false,
+                'join_type'  => 'JOIN',
+                'ref_type'   => false,
+                'ref_clause' => false,
+                'base_expr'  => '`tableA`',
+                'sub_tree'   => false,
+            ],
+            [
+                'expr_type' => 'table',
+                'table'     => '`tableB`',
+                'no_quotes' => [
+                    'delim' => false,
+                    'parts' => [
+                        'tableB',
+                    ],
+                ],
+                'alias'      => false,
+                'hints'      => false,
+                'join_type'  => 'LEFT',
+                'ref_type'   => 'ON',
+                'ref_clause' => [
+                    [
+                        'expr_type' => 'colref',
+                        'base_expr' => '`tableA`.id',
+                        'no_quotes' => [
+                            'delim' => '.',
+                            'parts' => [
+                                'tableA',
+                                'id',
+                            ],
+                        ],
+                        'sub_tree' => false,
+                    ],
+                    [
+                        'expr_type' => 'operator',
+                        'base_expr' => '=',
+                        'sub_tree'  => false,
+                    ],
+                    [
+                        'expr_type' => 'colref',
+                        'base_expr' => '`tableB`.`tableA_id`',
+                        'no_quotes' => [
+                            'delim' => '.',
+                            'parts' => [
+                                'tableB',
+                                'tableA_id',
+                            ],
+                        ],
+                        'sub_tree' => false,
+                    ],
+                ],
+                'base_expr' => '`tableB` ON `tableA`.id = `tableB`.`tableA_id`',
+                'sub_tree'  => false,
+            ],
+        ];
+
+        $result = $this->converter->convert($from);
+
+        $table = ['name' => 'table', 'args' => ['tableA']];
+        $join = ['name' => 'join', 'args' => ['tableB', 'tableA.id', '=', 'tableB.tableA_id']];
+        $this->assertEquals($result, [$table, $join]);
     }
 }

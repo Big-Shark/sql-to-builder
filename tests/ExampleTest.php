@@ -62,14 +62,20 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 
     public function testWhereIn()
     {
-        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` IN (\'a\', \'b\') or `b` IN (\'c\', \'d\')'))->convert();
-        $this->assertEquals($result, 'DB::table(\'table\')->whereIn(\'a\', [\'a\', \'b\'])->orWhereIn(\'b\', [\'c\', \'d\'])->get()');
+        $sql = 'SELECT *  FROM `table` WHERE `a` IN (\'a\', \'b\') or `b` IN (\'c\', \'d\')';
+        $result = (new BuilderClass($sql))->convert();
+
+        $actual = 'DB::table(\'table\')->whereIn(\'a\', [\'a\', \'b\'])->orWhereIn(\'b\', [\'c\', \'d\'])->get()';
+        $this->assertEquals($result, $actual);
     }
 
     public function testWhereNotIn()
     {
-        $result = (new BuilderClass('SELECT *  FROM `table` WHERE `a` NOT IN (\'a\', \'b\') or `b` NOT IN (\'c\', \'d\')'))->convert();
-        $this->assertEquals($result, 'DB::table(\'table\')->whereNotIn(\'a\', [\'a\', \'b\'])->orWhereNotIn(\'b\', [\'c\', \'d\'])->get()');
+        $sql = 'SELECT *  FROM `table` WHERE `a` NOT IN (\'a\', \'b\') or `b` NOT IN (\'c\', \'d\')';
+        $result = (new BuilderClass($sql))->convert();
+
+        $actual = 'DB::table(\'table\')->whereNotIn(\'a\', [\'a\', \'b\'])->orWhereNotIn(\'b\', [\'c\', \'d\'])->get()';
+        $this->assertEquals($result, $actual);
     }
 
     public function testWhereLike()
@@ -103,5 +109,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 
         $result = (new BuilderClass('SELECT a as b  FROM `table`'))->convert();
         $this->assertEquals($result, 'DB::select(\'a as b\')->table(\'table\')->get()');
+    }
+
+    public function testJoin()
+    {
+        $sql = 'SELECT * FROM `tableA` LEFT JOIN `tableB` ON `tableA`.id = `tableB`.`tableA_id`';
+        $result = (new BuilderClass($sql))->convert();
+
+        $actual = 'DB::table(\'tableA\')->join(\'tableB\', \'tableA.id\', \'=\', \'tableB.tableA_id\')->get()';
+        $this->assertEquals($result, $actual);
     }
 }
