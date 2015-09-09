@@ -15,9 +15,14 @@ abstract class Converter
     protected function getValueWithoutQuotes($item, $key = 'base_expr')
     {
         $value = $item[$key];
-        if (isset($item['no_quotes']['parts'])) {
-            if (isset($item['no_quotes']['delim'])) {
-                $value = implode($item['no_quotes']['delim'], $item['no_quotes']['parts']);
+
+        if (isset($item['no_quotes']['parts'][0])) {
+            if (count($item['no_quotes']['parts']) > 1) {
+                if (isset($item['no_quotes']['delim'])) {
+                    $value = implode($item['no_quotes']['delim'], $item['no_quotes']['parts']);
+                } else {
+                    $value = implode('.', $item['no_quotes']['parts']);
+                }
             } else {
                 $value = $item['no_quotes']['parts'][0];
             }
