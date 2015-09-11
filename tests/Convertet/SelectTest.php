@@ -91,9 +91,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase
                 'delim' => '.',
                 'parts' => [
                     'users',
-                    'id'
-                ]
-            ]
+                    'id',
+                ],
+            ],
         ];
 
         $result = $this->converter->convert([$select]);

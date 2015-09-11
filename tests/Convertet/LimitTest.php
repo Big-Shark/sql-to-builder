@@ -20,7 +20,6 @@ class LimitTest extends \PHPUnit_Framework_TestCase
         $result = $this->converter->convert($limit);
 
         $this->assertEquals($result, []);
-
     }
 
     public function testSkip()
