@@ -81,4 +81,22 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $result = $this->converter->convert([$select]);
         $this->assertEquals($result, [['name' => 'select', 'args' => ['a as b']]]);
     }
+
+    public function testPrefix()
+    {
+        $select = [
+            'expr_type' => 'colref',
+            'base_expr' => '`users`.`id`',
+            'no_quotes' => [
+                'delim' => '.',
+                'parts' => [
+                    'users',
+                    'id'
+                ]
+            ]
+        ];
+
+        $result = $this->converter->convert([$select]);
+        $this->assertEquals($result, [['name' => 'select', 'args' => ['users.id']]]);
+    }
 }
