@@ -119,4 +119,13 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $actual = 'DB::table(\'tableA\')->join(\'tableB\', \'tableA.id\', \'=\', \'tableB.tableA_id\')->get()';
         $this->assertEquals($result, $actual);
     }
+
+    public function testLimit()
+    {
+        $result = (new BuilderClass('SELECT * FROM table LIMIT 10'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->take(10)->get()');
+
+        $result = (new BuilderClass('SELECT * FROM `table` LIMIT 5, 10'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->skip(5)->take(10)->get()');
+    }
 }
