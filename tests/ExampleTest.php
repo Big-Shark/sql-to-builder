@@ -128,4 +128,13 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         $result = (new BuilderClass('SELECT * FROM `table` LIMIT 5, 10'))->convert();
         $this->assertEquals($result, 'DB::table(\'table\')->skip(5)->take(10)->get()');
     }
+
+    public function testOrder()
+    {
+        $result = (new BuilderClass('SELECT * FROM table ORDER BY id'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->orderBy(\'id\')->get()');
+
+        $result = (new BuilderClass('SELECT * FROM table ORDER BY id DESC'))->convert();
+        $this->assertEquals($result, 'DB::table(\'table\')->orderBy(\'id\', \'DESC\')->get()');
+    }
 }
