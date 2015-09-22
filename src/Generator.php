@@ -8,21 +8,23 @@ class Generator
      * @var array
      */
     protected $functions = [];
-    /**
-     * @var null
-     */
-    protected $class = null;
 
     /**
-     * @param $class
+     * @var array
      */
-    public function __construct($class)
+    protected $class = [];
+
+    /**
+     * @param string $class
+     * @param array $args
+     */
+    public function __construct($class, $args = [])
     {
-        $this->class = $class;
+        $this->class = ['name' => $class, 'args' => $args];
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param array $args
      *
      * @return $this
@@ -55,7 +57,7 @@ class Generator
      */
     public function isStatic()
     {
-        return !(substr($this->class, 0, 1) === '$');
+        return !(substr($this->class['name'], 0, 1) === '$');
     }
 
     /**
@@ -76,7 +78,10 @@ class Generator
             $parts[] = $function['name'].'('.implode(', ', $args).')';
         }
 
-        $result = $this->class.($this->isStatic() ? '::' : '->').implode($parts, '->');
+        $class = $this->class['name'];
+        $class .= count($this->class['args']) ? '('.implode(', ', $this->class['args']).')' : '';
+        
+        $result = $class.($this->isStatic() ? '::' : '->').implode($parts, '->');
 
         return $result;
     }

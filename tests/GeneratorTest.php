@@ -31,7 +31,13 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     public function testConstructorAndGetClass()
     {
         $generator = new Generator('$db');
-        $this->assertEquals($generator->getClass(), '$db');
+        $this->assertEquals($generator->getClass(), ['name' => '$db', 'args' => []]);
+
+        $generator = new Generator('$db', [1]);
+        $this->assertEquals($generator->getClass(), ['name' => '$db', 'args' => [1]]);
+
+        $generator = new Generator('DB', [1]);
+        $this->assertEquals($generator->getClass(), ['name' => 'DB', 'args' => [1]]);
     }
 
     public function testIsStatic()
