@@ -45,12 +45,17 @@ class BuilderClass
     {
         $parsed = $this->sqlParser->parse($this->sql);
 
+        if (false === $parsed) {
+            throw new \Exception('SQL query is not valid');
+        }
+
         foreach ($parsed as $section => $data) {
             if ($this->converterFactory->canCreate($section)) {
                 $converter = $this->converterFactory->create($section);
                 $result = $converter->convert($data);
                 foreach ($result as $function) {
-                    $this->generator->addFunction($function['name'], (isset($function['args']) ? $function['args'] : []));
+                    $args = isset($function['args']) ? $function['args'] : [];
+                    $this->generator->addFunction($function['name'], $args);
                 }
             }
         }
