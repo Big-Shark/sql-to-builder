@@ -96,10 +96,6 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
                 'DB::select(\'a as b\')->table(\'table\')->get()'
             ],
             [
-                'SELECT * FROM `tableA` LEFT JOIN `tableB` ON `tableA`.id = `tableB`.`tableA_id`',
-                'DB::table(\'tableA\')->join(\'tableB\', \'tableA.id\', \'=\', \'tableB.tableA_id\')->get()'
-            ],
-            [
                 'SELECT * FROM table LIMIT 10',
                 'DB::table(\'table\')->take(10)->get()'
             ],
@@ -114,6 +110,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             [
                 'SELECT * FROM table ORDER BY id DESC',
                 'DB::table(\'table\')->orderBy(\'id\', \'DESC\')->get()'
+            ],
+            [
+                'SELECT * FROM table GROUP BY id',
+                'DB::table(\'table\')->groupBy(\'id\')->get()'
+            ],
+            [
+                'SELECT * FROM table GROUP BY `id`',
+                'DB::table(\'table\')->groupBy(\'id\')->get()'
             ],
         ];
     }
