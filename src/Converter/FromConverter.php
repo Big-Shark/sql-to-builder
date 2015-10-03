@@ -14,7 +14,7 @@ class FromConverter extends Converter implements ConverterInterface
         }
         unset($from[0]);
         foreach ($from as $item) {
-            if ('LEFT' === $item['join_type']) {
+            if (in_array($item['join_type'], ['LEFT', 'RIGHT'], true)) {
                 $table = $this->getValueWithoutQuotes($item, 'table');
                 if ('ON' === strtoupper($item['ref_type'])) {
                     $args = [
@@ -23,7 +23,7 @@ class FromConverter extends Converter implements ConverterInterface
                         $item['ref_clause'][1]['base_expr'],
                         $this->getValueWithoutQuotes($item['ref_clause'][2], 'base_expr'),
                     ];
-                    $result[] = $this->format('join', $args);
+                    $result[] = $this->format(strtolower($item['join_type']).'Join', $args);
                 }
             }
         }

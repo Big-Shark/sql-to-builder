@@ -101,7 +101,14 @@ class FromTest extends \PHPUnit_Framework_TestCase
         $result = $this->converter->convert($from);
 
         $table = ['name' => 'table', 'args' => ['tableA']];
-        $join = ['name' => 'join', 'args' => ['tableB', 'tableA.id', '=', 'tableB.tableA_id']];
+        $join = ['name' => 'leftJoin', 'args' => ['tableB', 'tableA.id', '=', 'tableB.tableA_id']];
+        $this->assertEquals($result, [$table, $join]);
+
+        $from[1]['join_type'] = 'RIGHT';
+        $result = $this->converter->convert($from);
+
+        $table = ['name' => 'table', 'args' => ['tableA']];
+        $join = ['name' => 'rightJoin', 'args' => ['tableB', 'tableA.id', '=', 'tableB.tableA_id']];
         $this->assertEquals($result, [$table, $join]);
     }
 }

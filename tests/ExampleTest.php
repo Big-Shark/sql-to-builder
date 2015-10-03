@@ -119,6 +119,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
                 'SELECT * FROM table GROUP BY `id`',
                 'DB::table(\'table\')->groupBy(\'id\')->get()'
             ],
+            [
+                'SELECT * FROM table LEFT JOIN `join_table` ON `table`.`id` = `join_table`.`table_id`',
+                'DB::table(\'table\')->leftJoin(\'join_table\', \'table.id\', \'=\', \'join_table.table_id\')->get()'
+            ],
+            [
+                'SELECT * FROM table RIGHT JOIN `join_table` ON `table`.`id` = `join_table`.`table_id`',
+                'DB::table(\'table\')->rightJoin(\'join_table\', \'table.id\', \'=\', \'join_table.table_id\')->get()'
+            ],
         ];
     }
 }
