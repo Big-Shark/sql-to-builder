@@ -47,11 +47,11 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'SELECT a, b, c  FROM table',
-                'DB::select(\'a\', \'b\', \'c\')->table(\'table\')->get()'
+                'DB::table(\'table\')->select(\'a\', \'b\', \'c\')->get()'
             ],
             [
                 'SELECT `a`, `b`, `c`  FROM table',
-                'DB::select(\'a\', \'b\', \'c\')->table(\'table\')->get()'
+                'DB::table(\'table\')->select(\'a\', \'b\', \'c\')->get()'
             ],
             [
                 'SELECT *  FROM table WHERE `a` = 1',
@@ -103,11 +103,11 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'SELECT `a` as `b`  FROM `table`',
-                'DB::select(\'a AS b\')->table(\'table\')->get()'
+                'DB::table(\'table\')->select(\'a AS b\')->get()'
             ],
             [
                 'SELECT a as b  FROM `table`',
-                'DB::select(\'a AS b\')->table(\'table\')->get()'
+                'DB::table(\'table\')->select(\'a AS b\')->get()'
             ],
             [
                 'SELECT * FROM table LIMIT 10',
@@ -151,11 +151,11 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'SELECT count(`c`)  FROM table',
-                'DB::select(DB::raw(\'COUNT(`c`)\'))->table(\'table\')->get()'
+                'DB::table(\'table\')->select(DB::raw(\'COUNT(`c`)\'))->get()'
             ],
             [
                 'SELECT count(`c`) as c FROM table',
-                'DB::select(DB::raw(\'COUNT(`c`) AS c\'))->table(\'table\')->get()'
+                'DB::table(\'table\')->select(DB::raw(\'COUNT(`c`) AS c\'))->get()'
             ],
         ];
     }
