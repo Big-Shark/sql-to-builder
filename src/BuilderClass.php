@@ -39,8 +39,9 @@ class BuilderClass
     }
 
     /**
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public function convert()
     {
@@ -58,7 +59,7 @@ class BuilderClass
             }
         }
 
-        usort($results, function($a, $b) {
+        usort($results, function ($a, $b) {
             return (int) ('table' === $b['name']);
         });
 

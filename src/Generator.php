@@ -16,7 +16,7 @@ class Generator
 
     /**
      * @param string $class
-     * @param array $args
+     * @param array  $args
      */
     public function __construct($class, $args = [])
     {
@@ -25,7 +25,7 @@ class Generator
 
     /**
      * @param string $name
-     * @param array $args
+     * @param array  $args
      *
      * @return $this
      */
@@ -61,8 +61,9 @@ class Generator
     }
 
     /**
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public function generate()
     {
@@ -81,7 +82,7 @@ class Generator
 
         $class = $this->class['name'];
         $class .= count($this->class['args']) ? '('.implode(', ', $this->class['args']).')' : '';
-        
+
         $result = $class.($this->isStatic() ? '::' : '->').implode($parts, '->');
 
         return $result;
