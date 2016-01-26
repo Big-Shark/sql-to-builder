@@ -2,6 +2,8 @@
 
 namespace BigShark\SQLToBuilder\Converter;
 
+use BigShark\SQLToBuilder\Generator;
+
 class SelectConverter extends Converter implements ConverterInterface
 {
     public function convert($select)
@@ -19,9 +21,20 @@ class SelectConverter extends Converter implements ConverterInterface
             if ('colref' === $item['expr_type']) {
                 $value = $this->getValueWithoutQuotes($item);
                 if (isset($item['alias']) && is_array($item['alias'])) {
-                    $value .= ' as '.$this->getValueWithoutQuotes($item['alias'], 'name');
+                    $value .= ' AS '.$this->getValueWithoutQuotes($item['alias'], 'name');
                 }
                 $s[] = $value;
+            } elseif ('aggregate_function' === $item['expr_type'] || 'function' === $item['expr_type']) {
+                $function = strtoupper($item['base_expr']);
+                $value = $function.'('.implode(', ', array_column($item['sub_tree'], 'base_expr')).')';
+                if (isset($item['alias']) && is_array($item['alias'])) {
+                    $value .= ' AS '.$item['alias']['name'];
+                }
+
+                $generator = new Generator('DB');
+                $generator->addFunction('raw', [$value]);
+
+                $s[] = $generator;
             }
         }
         if (is_array($s) && count($s)) {

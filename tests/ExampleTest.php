@@ -7,6 +7,16 @@ use BigShark\SQLToBuilder\BuilderClass;
 class ExampleTest extends \PHPUnit_Framework_TestCase
 {
 
+    public function testNotCorrectSql()
+    {
+        try {
+            (new BuilderClass('test'))->convert();
+            $this->assertFalse();
+        } catch (\Exception $e) {
+            $this->assertEquals($e->getMessage(), 'SQL query is not valid');
+        }
+    }
+
     /**
      * @dataProvider examples
      */
@@ -30,6 +40,10 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             [
                 'SELECT `*` FROM table',
                 'DB::table(\'table\')->get()'
+            ],
+            [
+                'SELECT `*` FROM table t',
+                'DB::table(\'table AS t\')->get()'
             ],
             [
                 'SELECT a, b, c  FROM table',
@@ -89,11 +103,11 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'SELECT `a` as `b`  FROM `table`',
-                'DB::select(\'a as b\')->table(\'table\')->get()'
+                'DB::select(\'a AS b\')->table(\'table\')->get()'
             ],
             [
                 'SELECT a as b  FROM `table`',
-                'DB::select(\'a as b\')->table(\'table\')->get()'
+                'DB::select(\'a AS b\')->table(\'table\')->get()'
             ],
             [
                 'SELECT * FROM table LIMIT 10',
@@ -126,6 +140,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             [
                 'SELECT * FROM table RIGHT JOIN `join_table` ON `table`.`id` = `join_table`.`table_id`',
                 'DB::table(\'table\')->rightJoin(\'join_table\', \'table.id\', \'=\', \'join_table.table_id\')->get()'
+            ],
+            [
+                'SELECT count(`c`)  FROM table',
+                'DB::select(DB::raw(\'COUNT(`c`)\'))->table(\'table\')->get()'
+            ],
+            [
+                'SELECT count(`c`) as c FROM table',
+                'DB::select(DB::raw(\'COUNT(`c`) AS c\'))->table(\'table\')->get()'
             ],
         ];
     }

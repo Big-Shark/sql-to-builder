@@ -62,6 +62,7 @@ class Generator
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function generate()
     {
@@ -99,6 +100,8 @@ class Generator
                 $args[] = $arg;
             } elseif (is_array($arg)) {
                 $args[] = '['.implode(', ', $this->generateArgs($arg)).']';
+            } elseif ($arg instanceof static) {
+                $args[] = $arg->generate();
             } else {
                 $args[] = '\''.$arg.'\'';
             }

@@ -67,19 +67,19 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $select['alias'] = ['name' => 'b'];
 
         $result = $this->converter->convert([$select]);
-        $this->assertEquals($result, [['name' => 'select', 'args' => ['a as b']]]);
+        $this->assertEquals($result, [['name' => 'select', 'args' => ['a AS b']]]);
 
         $select['base_expr'] = '`a`';
         $select['no_quotes'] = ['parts' => ['a']];
 
         $result = $this->converter->convert([$select]);
-        $this->assertEquals($result, [['name' => 'select', 'args' => ['a as b']]]);
+        $this->assertEquals($result, [['name' => 'select', 'args' => ['a AS b']]]);
 
         $select['alias'] = ['name' => '`b`'];
         $select['alias']['no_quotes'] = ['parts' => ['b']];
 
         $result = $this->converter->convert([$select]);
-        $this->assertEquals($result, [['name' => 'select', 'args' => ['a as b']]]);
+        $this->assertEquals($result, [['name' => 'select', 'args' => ['a AS b']]]);
     }
 
     public function testPrefix()

@@ -9,7 +9,9 @@ class FromConverter extends Converter implements ConverterInterface
         $result = [];
         if ('table' === $from[0]['expr_type']) {
             $value = $this->getValueWithoutQuotes($from[0], 'table');
-
+            if (isset($from[0]['alias']) && is_array($from[0]['alias'])) {
+                $value .= ' AS '.$this->getValueWithoutQuotes($from[0]['alias'], 'name');
+            }
             $result[] = $this->format('table', [$value]);
         }
         unset($from[0]);
