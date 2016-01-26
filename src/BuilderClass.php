@@ -59,9 +59,11 @@ class BuilderClass
             }
         }
 
-        usort($results, function ($a, $b) {
-            return (int) ('table' === $b['name']);
-        });
+        $table = current(array_filter($results, function ($item) {
+            return 'table' === $item['name'];
+        }));
+        unset($results[array_search($table, $results)]);
+        array_unshift($results, $table);
 
         foreach ($results as $function) {
             $args = isset($function['args']) ? $function['args'] : [];
