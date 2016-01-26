@@ -142,6 +142,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
                 'DB::table(\'table\')->rightJoin(\'join_table\', \'table.id\', \'=\', \'join_table.table_id\')->get()'
             ],
             [
+                'SELECT * FROM table LEFT JOIN `join_table` `jt` ON `table`.`id` = `jt`.`table_id`',
+                'DB::table(\'table\')->leftJoin(\'join_table AS jt\', \'table.id\', \'=\', \'jt.table_id\')->get()'
+            ],
+            [
+                'SELECT * FROM table LEFT JOIN `join_table` AS `jt` ON `table`.`id` = `jt`.`table_id`',
+                'DB::table(\'table\')->leftJoin(\'join_table AS jt\', \'table.id\', \'=\', \'jt.table_id\')->get()'
+            ],
+            [
                 'SELECT count(`c`)  FROM table',
                 'DB::select(DB::raw(\'COUNT(`c`)\'))->table(\'table\')->get()'
             ],

@@ -18,6 +18,9 @@ class FromConverter extends Converter implements ConverterInterface
         foreach ($from as $item) {
             if (in_array($item['join_type'], ['LEFT', 'RIGHT'], true)) {
                 $table = $this->getValueWithoutQuotes($item, 'table');
+                if (isset($item['alias']) && is_array($item['alias'])) {
+                    $table .= ' AS '.$this->getValueWithoutQuotes($item['alias'], 'name');
+                }
                 if ('ON' === strtoupper($item['ref_type'])) {
                     $args = [
                         $table,
