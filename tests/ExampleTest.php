@@ -3,8 +3,9 @@
 namespace BigShark\SQLToBuilder\Test;
 
 use BigShark\SQLToBuilder\BuilderClass;
+use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends \PHPUnit_Framework_TestCase
+class ExampleTest extends TestCase
 {
     public function testNotCorrectSql()
     {

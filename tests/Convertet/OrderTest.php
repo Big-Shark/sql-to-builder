@@ -2,14 +2,16 @@
 
 namespace BigShark\SQLToBuilder\Test\Converter;
 
-class OrderTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class OrderTest extends TestCase
 {
     /**
      * @var null|\BigShark\SQLToBuilder\Converter\OrderConverter
      */
     protected $converter = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new \BigShark\SQLToBuilder\Converter\OrderConverter();
     }

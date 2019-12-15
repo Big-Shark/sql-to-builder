@@ -2,7 +2,9 @@
 
 namespace BigShark\SQLToBuilder\Test\Converter;
 
-class WhereTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class WhereTest extends TestCase
 {
     /**
      * @var null|\BigShark\SQLToBuilder\Converter\WhereConverter
@@ -11,7 +13,7 @@ class WhereTest extends \PHPUnit_Framework_TestCase
 
     protected $baseWhere = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new \BigShark\SQLToBuilder\Converter\WhereConverter();
 

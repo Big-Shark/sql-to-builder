@@ -6,8 +6,9 @@ use BigShark\SQLToBuilder\Converter\Factory;
 use BigShark\SQLToBuilder\Converter\FromConverter;
 use BigShark\SQLToBuilder\Converter\SelectConverter;
 use BigShark\SQLToBuilder\Converter\WhereConverter;
+use PHPUnit\Framework\TestCase;
 
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends TestCase
 {
     public function testCanCreate()
     {

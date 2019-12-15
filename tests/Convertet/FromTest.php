@@ -2,14 +2,16 @@
 
 namespace BigShark\SQLToBuilder\Test\Converter;
 
-class FromTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class FromTest extends TestCase
 {
     /**
      * @var null|\BigShark\SQLToBuilder\Converter\FromConverter
      */
     protected $converter = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new \BigShark\SQLToBuilder\Converter\FromConverter();
     }

@@ -2,14 +2,16 @@
 
 namespace BigShark\SQLToBuilder\Test\Converter;
 
-class LimitTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class LimitTest extends TestCase
 {
     /**
      * @var null|\BigShark\SQLToBuilder\Converter\LimitConverter
      */
     protected $converter = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new \BigShark\SQLToBuilder\Converter\LimitConverter();
     }

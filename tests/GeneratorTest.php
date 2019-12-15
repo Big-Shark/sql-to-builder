@@ -3,13 +3,10 @@
 namespace BigShark\SQLToBuilder\Test;
 
 use BigShark\SQLToBuilder\Generator;
+use PHPUnit\Framework\TestCase;
 
-class GeneratorTest extends \PHPUnit_Framework_TestCase
+class GeneratorTest extends TestCase
 {
-    public function setUp()
-    {
-    }
-
     public function testEmpty()
     {
         $generator = new Generator('$db');
