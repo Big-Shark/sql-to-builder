@@ -16,10 +16,6 @@ cache:
     - vendor
     - $HOME/.composer/cache
 
-matrix:
-  allow_failures:
-    - php: nightly
-
 before_script:
   - travis_retry composer self-update
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
