@@ -83,7 +83,7 @@ class Generator
         $class = $this->class['name'];
         $class .= count($this->class['args']) ? '('.implode(', ', $this->class['args']).')' : '';
 
-        $result = $class.($this->isStatic() ? '::' : '->').implode($parts, '->');
+        $result = $class.($this->isStatic() ? '::' : '->').implode('->', $parts);
 
         return $result;
     }
