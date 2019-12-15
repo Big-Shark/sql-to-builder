@@ -7,7 +7,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This package will help you to convert sql query to laravel query builder
+This package will help you convert from sql query to laravel query builder
 
 ## Install
 
